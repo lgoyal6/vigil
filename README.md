@@ -43,7 +43,7 @@ needs a single-use, scoped, just-in-time grant.
           │
           └─ destructive calls ONLY via Pomerium (:4300) ──► payments-api
                                    /rollback /restart  (payments-api re-verifies
-                                   the grant token with the gate — two layers)
+                                   the grant token with the gate - two layers)
 ```
 
 The frontend consumes the orchestrator over SSE (`/events`, full `LoopState`
