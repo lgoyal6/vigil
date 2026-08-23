@@ -46,7 +46,7 @@ jobs:
         run: |
           (cd services/shared && npm test)
           (cd services/gate && npm test)
-          (cd services/vigil-agent && npx tsx --test 'src/**/*.test.ts')
+          (cd services/vigil-agent && npm test)
 
   docker-build:
     runs-on: ubuntu-latest

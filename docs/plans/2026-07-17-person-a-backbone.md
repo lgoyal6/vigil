@@ -1,18 +1,18 @@
-# Person A — Backbone: mock prod + orchestrator (branch `person-a-backbone`)
+# Person A - Backbone: mock prod + orchestrator (branch `person-a-backbone`)
 
 > **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans if
 > available; otherwise execute top-to-bottom, one todo per task. Commit after
 > every task. You own `services/payments-api/**` and `services/vigil-agent/**`
-> EXCEPT `services/vigil-agent/src/integrations/zero-live.ts` (Person C's file —
+> EXCEPT `services/vigil-agent/src/integrations/zero-live.ts` (Person C's file  - 
 > never edit it). Do not touch `src/**` (frontend) or `src/lib/contract.ts`.
 
 **Goal:** A real payments-api that really breaks, and a vigil-agent orchestrator
 that detects it from live traffic, diagnoses, requests a grant, rolls back, and
-streams `LoopState` snapshots over SSE — with local fallbacks for every
+streams `LoopState` snapshots over SSE - with local fallbacks for every
 integration so the demo works before any other branch merges.
 
 **Read first:** `src/lib/contract.ts` (all types/routes used below come from it)
-and `src/lib/use-incident-sim.ts` (the scripted loop you are making real — reuse
+and `src/lib/use-incident-sim.ts` (the scripted loop you are making real - reuse
 its audit copy/tone so the UI reads the same).
 
 **Runtime:** Node + `tsx` (no build step), Express. All services import contract
@@ -26,9 +26,9 @@ types via relative path, e.g. `../../../src/lib/contract`.
 - Create: `services/payments-api/package.json`
 - Create: `services/payments-api/src/index.ts`
 
-**Produces (consumed by A2, B, C):** HTTP on :4100 —
+**Produces (consumed by A2, B, C):** HTTP on :4100  - 
 `GET /health /pay /metrics /logs /deploys`, `POST /admin/break /admin/reset`
-(safe), `POST /rollback /restart` (destructive — grant-checked when `GATE_URL`
+(safe), `POST /rollback /restart` (destructive - grant-checked when `GATE_URL`
 is set, per `VerifyRequest/Response` in the contract).
 
 - [ ] **Step 1: scaffold**
@@ -165,7 +165,7 @@ curl -s localhost:4100/pay                     # {"ok":true,"deploy":"#4820"}
 kill %1
 ```
 
-- [ ] **Step 4: commit** — `git add services/payments-api && git commit -m "feat: payments-api mock prod with grant-checked destructive routes"`
+- [ ] **Step 4: commit** - `git add services/payments-api && git commit -m "feat: payments-api mock prod with grant-checked destructive routes"`
 
 ---
 
@@ -361,11 +361,11 @@ export async function thrash() {}
 export async function resetDemo() {}
 ```
 
-- [ ] **Step 5: verify** — `npx tsx src/server.ts &` then
+- [ ] **Step 5: verify** - `npx tsx src/server.ts &` then
 `curl -N localhost:4000/events` prints one `data: {...}` snapshot and stays
 open; `curl -s localhost:4000/state | head -c 200` shows fresh LoopState. Kill it.
 
-- [ ] **Step 6: commit** — `git commit -m "feat: vigil-agent state store, traffic loop, SSE server"`
+- [ ] **Step 6: commit** - `git commit -m "feat: vigil-agent state store, traffic loop, SSE server"`
 
 ---
 
@@ -376,11 +376,11 @@ open; `curl -s localhost:4000/state | head -c 200` shows fresh LoopState. Kill i
 - Create: `services/vigil-agent/src/parse-fallback.test.ts`
 - Create: `services/vigil-agent/src/clients.ts`
 
-**Interfaces (Produces — B and C plug into these via env, not code):**
-- `parseLogs(raw): Promise<ParsedLogs>` — Zero live when `ZERO_MODE=live`, else fallback
-- `requestGrant(req: GrantRequest): Promise<GrantResponse>` — gate when `GATE_URL` set
-- `diagnose(req: DiagnoseRequest): Promise<DiagnoseResponse>` — worker when `WORKER_URL` set
-- `applyRemediation(action, token)` — via `POMERIUM_URL` else `PAYMENTS_URL`
+**Interfaces (Produces - B and C plug into these via env, not code):**
+- `parseLogs(raw): Promise<ParsedLogs>` - Zero live when `ZERO_MODE=live`, else fallback
+- `requestGrant(req: GrantRequest): Promise<GrantResponse>` - gate when `GATE_URL` set
+- `diagnose(req: DiagnoseRequest): Promise<DiagnoseResponse>` - worker when `WORKER_URL` set
+- `applyRemediation(action, token)` - via `POMERIUM_URL` else `PAYMENTS_URL`
 
 - [ ] **Step 1: failing test `src/parse-fallback.test.ts`** (node:test, run with tsx):
 
@@ -401,7 +401,7 @@ test("parses the .vlog fixture to the dominant error signature", () => {
 });
 ```
 
-Run: `npx tsx src/parse-fallback.test.ts` — expect FAIL (module not found).
+Run: `npx tsx src/parse-fallback.test.ts` - expect FAIL (module not found).
 
 - [ ] **Step 2: implement `src/parse-fallback.ts`**:
 
@@ -432,7 +432,7 @@ export function parseLogsFallback(raw: string): ParsedLogs {
 }
 ```
 
-Run test again — expect all asserts PASS.
+Run test again - expect all asserts PASS.
 
 - [ ] **Step 3: implement `src/clients.ts`**:
 
@@ -494,7 +494,7 @@ export async function applyRemediation(action: "rollback" | "restart", token: st
 }
 ```
 
-- [ ] **Step 4: commit** — `git commit -m "feat: fallback parser + env-switched integration clients"`
+- [ ] **Step 4: commit** - `git commit -m "feat: fallback parser + env-switched integration clients"`
 
 ---
 
@@ -700,11 +700,11 @@ sleep 12 && curl -s localhost:4000/state | python3 -c "import json,sys; s=json.l
 curl -s -X POST localhost:4000/demo/reset
 ```
 
-- [ ] **Commit** — `git commit -m "feat: autonomous incident loop — detect, diagnose, gate, rollback, clamp"`
+- [ ] **Commit** - `git commit -m "feat: autonomous incident loop — detect, diagnose, gate, rollback, clamp"`
 
 ---
 
-### Task A5 (STRETCH — only if A1–A4 are done and pushed): OpenAI hypothesis
+### Task A5 (STRETCH - only if A1–A4 are done and pushed): OpenAI hypothesis
 
 **Files:** Create `services/vigil-agent/src/hypothesis.ts`; call it in the
 orchestrator right after `parseLogs`, adding an audit line with the model's
