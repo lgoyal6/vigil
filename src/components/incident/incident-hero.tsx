@@ -22,9 +22,9 @@ const STATUS_BADGE: Record<LiveStatus, { label: string; className: string; pulse
   lost: { label: "STREAM LOST", className: "bg-red-500/15 text-red-500", pulse: true },
 };
 
-export function IncidentHero({ incident }: { incident: Incident }) {
+export function IncidentHero({ incident, simulationOnly = false }: { incident: Incident; simulationOnly?: boolean }) {
   const sim = useIncidentSim();
-  const live = useIncidentLive();
+  const live = useIncidentLive(!simulationOnly);
   // Agent configured → the live stream is authoritative. Only "off" falls
   // back to the scripted sim; a dropped stream RETAINS the last snapshot.
   const agentMode = live.status !== "off";
@@ -47,6 +47,15 @@ export function IncidentHero({ incident }: { incident: Incident }) {
         <ArrowLeft className="h-3.5 w-3.5" />
         Incidents
       </Link>
+
+      {simulationOnly && (
+        <section className="mt-4 rounded-xl border border-border p-5" aria-label="Public incident sandbox">
+          <h1 className="text-xl font-semibold">Recover one service without handing over production keys.</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Play the original fictional incident sequence: rising errors, diagnosis, temporary rollback grant, recovery check, and a denied mass restart. Pause to inspect the reasoning and reset to try again.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Scripted browser simulation. Error rates, spend, provider names and elapsed times are illustrative. This route never connects to the configured agent, production services, cloud sandboxes or a wallet.</p>
+          <a className="mt-3 inline-block underline" href="https://github.com/lgoyal6/vigil">GitHub source</a>
+        </section>
+      )}
 
       {/* control bar */}
       <GlassCard className="mt-4 p-4">
