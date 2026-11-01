@@ -138,3 +138,11 @@ threat model, and known limitations, and `.env.example` for every variable
 ## License
 
 MIT License. See [LICENSE](LICENSE).
+
+## Public visitor sandbox
+
+Open `/demo` for the original scripted incident UI, with pause, replay and reset.
+This route explicitly disables the live-agent connection even when
+`NEXT_PUBLIC_AGENT_URL` is configured. Its telemetry, provider names and grant
+timeline are illustrative. No cloud, production, identity or payment action runs.
+Use the service workflow above for live integration verification.

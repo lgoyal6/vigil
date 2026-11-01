@@ -31,12 +31,14 @@ export default function DashboardPage() {
             On-call, autonomously.
           </h1>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-            Vigil diagnoses and fixes production incidents on its own. It holds no
+            Vigil investigates incidents and requests narrowly scoped recovery actions. It holds no
             keys to production and can only act through a gate that grants one
             scoped, single-use permission at a time.
           </p>
         </div>
       </div>
+
+      <p className="mt-4 text-sm text-muted-foreground">Dashboard sample data is illustrative. <Link className="underline" href="/demo">Open the isolated incident sandbox</Link> to inspect the complete recovery sequence.</p>
 
       {/* stat tiles */}
       <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">

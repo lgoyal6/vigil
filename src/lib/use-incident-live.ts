@@ -32,9 +32,10 @@ const LOST_AFTER_ATTEMPTS = 4;
  * status drives `controlsDisabled` so the UI can lock the buttons while
  * the backend is unreachable.
  */
-export function useIncidentLive() {
+export function useIncidentLive(enabled = true) {
+  const agentUrl = enabled ? AGENT_URL : "";
   const [state, setState] = useState<LoopState | null>(null);
-  const [status, setStatus] = useState<LiveStatus>(AGENT_URL ? "connecting" : "off");
+  const [status, setStatus] = useState<LiveStatus>(agentUrl ? "connecting" : "off");
   const [controlError, setControlError] = useState<string | null>(null);
 
   const esRef = useRef<EventSource | null>(null);
@@ -43,7 +44,7 @@ export function useIncidentLive() {
   const closedRef = useRef(false);
 
   useEffect(() => {
-    if (!AGENT_URL) return;
+    if (!agentUrl) return;
     closedRef.current = false;
 
     const clearRetry = () => {
@@ -57,7 +58,7 @@ export function useIncidentLive() {
     // so the UI can reflect "reconnecting"/"lost" and back off deterministically.
     const connect = () => {
       if (closedRef.current) return;
-      const es = new EventSource(`${AGENT_URL}${AGENT_ROUTES.events}`);
+      const es = new EventSource(`${agentUrl}${AGENT_ROUTES.events}`);
       esRef.current = es;
 
       es.onopen = () => {
@@ -98,18 +99,18 @@ export function useIncidentLive() {
       esRef.current?.close();
       esRef.current = null;
     };
-  }, []);
+  }, [agentUrl]);
 
   const post = useCallback(async (route: string, action: string) => {
-    if (!AGENT_URL) return;
+    if (!agentUrl) return;
     try {
-      const res = await fetch(`${AGENT_URL}${route}`, { method: "POST" });
+      const res = await fetch(`${agentUrl}${route}`, { method: "POST" });
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       setControlError(null);
     } catch {
       setControlError(`Couldn't ${action} — agent unreachable.`);
     }
-  }, []);
+  }, [agentUrl]);
 
   const controlsDisabled = status === "reconnecting" || status === "lost";
 
